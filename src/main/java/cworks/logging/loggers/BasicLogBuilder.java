@@ -1,4 +1,4 @@
-package cworks.logging.impl;
+package cworks.logging.loggers;
 
 import cworks.logging.LogBuilder;
 import cworks.logging.io.IO;

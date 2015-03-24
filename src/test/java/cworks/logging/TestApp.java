@@ -2,8 +2,14 @@ package cworks.logging;
 
 import org.junit.Test;
 
-public class TestApp {
+import java.io.File;
 
+public class TestApp {
+	
+	private static final String SLASH = File.separator;
+	
+	private static final String TMP_DIR = System.getProperty("java.io.tmpdir");
+	
 	@Test
 	public void testBasicLogger() throws Exception {
 
@@ -15,7 +21,7 @@ public class TestApp {
 		//	.dtFormat("YYYY-MM-DDThh:mm:ss.sssTZD")
 		//	.tags("TestApp");
 		
-		System.setProperty("log", "/tmp/test_basic_logger.log");
+		System.setProperty("log", TMP_DIR + SLASH + "test_basic_logger.log");
 		Log.debug("Starting testBasicLogger");
 		
 		A a = new A();
