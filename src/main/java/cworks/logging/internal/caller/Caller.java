@@ -1,4 +1,4 @@
-package cworks.logging.internal;
+package cworks.logging.internal.caller;
 
 public interface Caller {
     public String getName();

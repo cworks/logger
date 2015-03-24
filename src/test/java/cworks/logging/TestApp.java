@@ -21,7 +21,7 @@ public class TestApp {
 		//	.dtFormat("YYYY-MM-DDThh:mm:ss.sssTZD")
 		//	.tags("TestApp");
 		
-		System.setProperty("log", TMP_DIR + SLASH + "test_basic_logger.log");
+		//System.setProperty("log", TMP_DIR + SLASH + "test_basic_logger.log");
 		Log.debug("Starting testBasicLogger");
 		
 		A a = new A();

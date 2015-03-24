@@ -1,57 +1,41 @@
 package cworks.logging;
 
-import java.time.OffsetDateTime;
+import cworks.logging.internal.format.FormatStrategy;
+import cworks.logging.internal.format.SimpleFormatStrategy;
 
 public abstract class Logger {
+
+    private FormatStrategy strategy;
     
     private Level activeLevel;
     
     private Logger next;
     
     public Logger(Level level) {
+        this(level, new SimpleFormatStrategy());
+    }
+    
+    public Logger(Level level, FormatStrategy strategy) {
         this.activeLevel = level;
+        this.strategy = strategy;
     }
     
     public void setNext(Logger logger) {
         this.next = logger;
     }
     
-    public void write(Level level, String something) {
+    public void write(Level level, String something, String...tags) {
         if(level.getValue() <= activeLevel.getValue()) {
-
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            StackTraceElement caller = elements[0];
-            for(int i = 1; i < elements.length; i++) {
-                if(elements[i].getClassName().equals(Log.class.getName())) {
-                    continue;
-                }
-                caller = elements[i];
-                break;
-            }
-
-            String formattedLine = String.format("%s|%s|%s|%s|%s|%s:%d%s|%s",
-                    OffsetDateTime.now(),
-                    level,
-                    Thread.currentThread().getName(),
-                    caller.getClassName(),
-                    caller.getMethodName(),
-                    caller.getFileName(),
-                    caller.getLineNumber(),
-                    tagsAsString(),
-                    something);
-            
+            String formattedLine = strategy.format(level, something, tags);
             write(formattedLine);
         }
         
         if(next != null) {
-            next.write(level, something);
+            next.write(level, something, tags);
         }
     }
 
-    public static String tagsAsString() {
-        return "";
-    }
-
     protected abstract void write(String something);
+    
     
 }

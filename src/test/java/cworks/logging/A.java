@@ -11,7 +11,7 @@ package cworks.logging;
 
 public class A {
     public void doA() {
-        Log.log("Log something from A.");
+        Log.log("Log something from A.", "Java", "Logging", "Test");
         AA aa = new AA();
         aa.doAA();
     }
