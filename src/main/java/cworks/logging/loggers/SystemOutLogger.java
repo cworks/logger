@@ -6,7 +6,7 @@ import cworks.logging.Logger;
 public class SystemOutLogger extends Logger {
 
     public SystemOutLogger(Level level) {
-        super(level);
+        super("system-out-logger", level);
     }
 
     @Override

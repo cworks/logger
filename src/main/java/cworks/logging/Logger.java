@@ -5,19 +5,30 @@ import cworks.logging.internal.format.SimpleFormatStrategy;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.Iterator;
 
 public abstract class Logger implements Closeable {
 
-    private FormatStrategy strategy;
-    
-    private Level activeLevel;
+    /**
+     * Line FormatStrategy 
+     */
+    protected FormatStrategy strategy;
 
-    public Logger(Level level) {
-        this(level, new SimpleFormatStrategy());
+    /**
+     * Log Level 
+     */
+    protected Level activeLevel;
+
+    /**
+     * Logger name
+     */
+    protected String name;
+    
+    public Logger(String name, Level level) {
+        this(name, level, new SimpleFormatStrategy());
     }
     
-    public Logger(Level level, FormatStrategy strategy) {
+    public Logger(String name, Level level, FormatStrategy strategy) {
+        this.name = name;
         this.activeLevel = level;
         this.strategy = strategy;
     }
@@ -32,7 +43,5 @@ public abstract class Logger implements Closeable {
     protected abstract void write(String something);
 
     @Override
-    public void close() throws IOException {
-
-    }
+    public void close() throws IOException { }
 }

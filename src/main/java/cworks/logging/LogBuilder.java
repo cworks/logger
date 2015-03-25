@@ -38,11 +38,15 @@ public class LogBuilder {
 
     /**
      * Create a Logger, each Logger must have
-     * 1. Level
-     * 2. FormatStrategy
-     * 3.
+     * 1. Name
+     * 2. Level 
+     * 3. FormatStrategy
+     * and can have
+     * 1. Tags
+     * 2. File
      */
     public void create() {
+        
         
 
         

@@ -4,7 +4,6 @@ import cworks.logging.Level;
 import cworks.logging.Logger;
 import cworks.logging.io.IO;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
@@ -21,7 +20,7 @@ public class FileLogger extends Logger {
      * @param logFile
      */
     public FileLogger(Level level, File logFile) {
-        super(level);
+        super("file-logger", level);
         this.logFile = logFile;
     }
 
