@@ -2,6 +2,7 @@ package cworks.logging;
 
 import cworks.logging.io.IO;
 import cworks.logging.loggers.FileLogger;
+import cworks.logging.loggers.Logger;
 import cworks.logging.loggers.SystemOutLogger;
 
 import java.io.File;
@@ -136,5 +137,9 @@ public final class LogContext {
                 }
             }
         });
+    }
+
+    public void addLogger(Logger logger) {
+
     }
 }

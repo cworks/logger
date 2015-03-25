@@ -1,7 +1,6 @@
 package cworks.logging.loggers;
 
 import cworks.logging.Level;
-import cworks.logging.Logger;
 import cworks.logging.io.IO;
 
 import java.io.File;
@@ -14,6 +13,10 @@ public class FileLogger extends Logger {
     private Writer logWriter = null;
     private File   logFile   = null;
 
+    public FileLogger(File logFile) {
+        this(Level.DEBUG, logFile);
+    }
+    
     /**
      * Create a FileLogger at a certain log Level and to a certain File 
      * @param level

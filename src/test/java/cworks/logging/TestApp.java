@@ -44,7 +44,7 @@ public class TestApp {
 
 		Log.newSetup().file(logFile)
 			.level("info")
-			.dtFormat("YYYY-MM-DDThh:mm:ss.sssTZD")
+			.dateTimeFormat("YYYY-MM-DDThh:mm:ss.sssTZD")
 			.tags("TestApp").create();
 
 		Log.debug("Starting testFileLogger");

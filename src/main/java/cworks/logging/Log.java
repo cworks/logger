@@ -1,5 +1,7 @@
 package cworks.logging;
 
+import cworks.logging.loggers.LoggerBuilder;
+
 public class Log {
 
     /**
@@ -11,8 +13,8 @@ public class Log {
      * Builder method used to bake a customized logger chain with custom options
      * @return
      */
-    public static LogBuilder newSetup() {
-        return new LogBuilder();
+    public static LoggerBuilder newSetup() {
+        return new LoggerBuilder();
     }
     
     public static void error(String something) {
