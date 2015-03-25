@@ -17,6 +17,9 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class IO {
 
@@ -199,5 +202,10 @@ public class IO {
 
     public static OutputStream asOutputStream(String path) throws IOException {
         return asOutputStream(new File(path));
+    }
+
+    public static List<String> asLines(File file) throws IOException {
+        BufferedReader reader = asBufferedReader(file);
+        return reader.lines().collect(Collectors.toList());
     }
 }

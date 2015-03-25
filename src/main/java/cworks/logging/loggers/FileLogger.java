@@ -4,51 +4,63 @@ import cworks.logging.Level;
 import cworks.logging.Logger;
 import cworks.logging.io.IO;
 
+import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 
 public class FileLogger extends Logger {
 
-    private static final Writer LOG_FILE = getLogFile();
+    //private static final Writer LOG_FILE = getLogFile();
+    private Writer logWriter = null;
+    private File   logFile   = null;
 
-    static {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                IO.closeQuietly(LOG_FILE);
-            }
-        });
-    }
-    
-    public FileLogger(Level level) {
+    /**
+     * Create a FileLogger at a certain log Level and to a certain File 
+     * @param level
+     * @param logFile
+     */
+    public FileLogger(Level level, File logFile) {
         super(level);
+        this.logFile = logFile;
     }
 
     @Override
     protected void write(String something) {
-        if(LOG_FILE != null) {
+        if(getLogWriter() != null) {
             writeQuietly(something);
         }
     }
 
     private void writeQuietly(String something) {
         try {
-            LOG_FILE.write(something + System.getProperty("line.separator"));
+            logWriter.write(something + System.getProperty("line.separator"));
         } catch (IOException ex) {
             System.err.println("IOException in FileLogger.writeQuietly(), text was: " + something);
         }
     }
     
-    private static Writer getLogFile() {
-        Writer logFile = null;
+    private Writer getLogWriter() {
         try {
-            String logProperty = System.getProperty("log");
-            if(logProperty != null) {
-                logFile = IO.asWriter(System.getProperty("log"), true);
+            // this code has ran before so return log writer
+            if(this.logWriter != null) {
+                return this.logWriter;
+            }
+            // first time running
+            if(this.logFile != null) {
+                this.logWriter = IO.asWriter(this.logFile, true);
             }
         } catch (IOException ex) {
             return null;
         }
-        return logFile;
+        return this.logWriter;
+    }
+
+    @Override
+    public void close() throws IOException {
+        if(this.logWriter != null) {
+            this.logWriter.flush();
+            this.logWriter.close();
+        }
     }
 }
