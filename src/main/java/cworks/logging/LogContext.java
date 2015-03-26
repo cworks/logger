@@ -1,13 +1,11 @@
 package cworks.logging;
 
-import cworks.logging.io.IO;
 import cworks.logging.loggers.FileLogger;
 import cworks.logging.loggers.Logger;
 import cworks.logging.loggers.SystemOutLogger;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public final class LogContext {
@@ -21,12 +19,12 @@ public final class LogContext {
      * If we have file loggers they are captured here so that we can close them when JVM exits 
      */
     final private List<Logger> chain;
-    
+
     /**
-     * If the log system property is set (-Dlog=/tmp/my.log) then this will be true 
+     * If the log system property is set (-Dlog=/tmp/my.log) then this will be true
      */
     private boolean toFile;
-    
+
     /**
      * The default logging level
      */
@@ -70,11 +68,10 @@ public final class LogContext {
      * @return top of the Logger chain
      */
     List<Logger> createChain() {
-        List<Logger> chain = Collections.synchronizedList(new ArrayList<>());
-        // always create a System.out logger
+        LinkedList<Logger> chain = new LinkedList<>();
+        // always add a System.out logger
         chain.add(new SystemOutLogger(logLevel));
-        
-        // if log to file is set then create a FileLogger
+        // if log to file is set then add a FileLogger
         if(toFile) {
             chain.add(new FileLogger(logLevel, new File(System.getProperty("log"))));
         }
@@ -120,26 +117,11 @@ public final class LogContext {
         return this.tags;
     }
     
-    public Logger chain() {
+    public List<Logger> chain() {
         return this.chain;
     }
 
-    /**
-     * When the Class Loader loads this class we want to create a shutdown hook that's
-     * responsible for closing each FileLogger.
-     */
-    static {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                synchronized (LogContext.getContext().fileLoggers) {
-                    LogContext.getContext().fileLoggers.stream().forEach(IO::closeQuietly);
-                }
-            }
-        });
-    }
-
     public void addLogger(Logger logger) {
-
+        chain.add(logger);
     }
 }

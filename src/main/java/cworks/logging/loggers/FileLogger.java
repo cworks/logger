@@ -9,7 +9,6 @@ import java.io.Writer;
 
 public class FileLogger extends Logger {
 
-    //private static final Writer LOG_FILE = getLogFile();
     private Writer logWriter = null;
     private File   logFile   = null;
 
@@ -37,6 +36,7 @@ public class FileLogger extends Logger {
     private void writeQuietly(String something) {
         try {
             logWriter.write(something + System.getProperty("line.separator"));
+            logWriter.flush();
         } catch (IOException ex) {
             System.err.println("IOException in FileLogger.writeQuietly(), text was: " + something);
         }
@@ -50,7 +50,19 @@ public class FileLogger extends Logger {
             }
             // first time running
             if(this.logFile != null) {
+                if(!this.logFile.exists()) {
+                    this.logFile.getParentFile().mkdirs();
+                    this.logFile.createNewFile();
+                }
                 this.logWriter = IO.asWriter(this.logFile, true);
+                if(this.logWriter != null) {
+                    final FileLogger me = this;
+                    Runtime.getRuntime().addShutdownHook(new Thread() {
+                        public void run() {
+                            IO.closeQuietly(me);
+                        }
+                    });
+                }
             }
         } catch (IOException ex) {
             return null;

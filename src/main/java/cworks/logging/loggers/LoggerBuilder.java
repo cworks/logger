@@ -3,18 +3,16 @@ package cworks.logging.loggers;
 import cworks.logging.Level;
 import cworks.logging.LogContext;
 import cworks.logging.internal.format.FormatStrategy;
+import cworks.logging.internal.format.SimpleFormatStrategy;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 public class LoggerBuilder {
     
     private String name;
     private Level  level;
-    private String dateTimeFormat;
-    private List<String> tags;
+    private String[] tags;
     private File file;
     private FormatStrategy formatStrategy;
     
@@ -28,17 +26,12 @@ public class LoggerBuilder {
     }
     
     public LoggerBuilder level(String level) {
-        this.level = Level.valueOf(level);
+        this.level = Level.valueOf(level.trim().toUpperCase());
         return this;
     }
 
-    public LoggerBuilder dateTimeFormat(String format) {
-        this.dateTimeFormat = format;
-        return this;
-    }
-    
     public LoggerBuilder tags(String... tags) {
-        this.tags = Arrays.asList(tags);
+        this.tags = tags;
         return this;
     }
 
@@ -52,7 +45,10 @@ public class LoggerBuilder {
         return this;
     }
 
-    public void create() {
+    /**
+     * Create the appropriate logger and add it to LogContext
+     */
+    public void add() {
         Logger logger;
         
         if(file != null) {
@@ -68,18 +64,17 @@ public class LoggerBuilder {
         if(level != null) {
             logger.setLevel(level);
         }
-        
-        if(formatStrategy != null) {
-            logger.setFormatStrategy(formatStrategy);
-        }
-        
+
         if(tags != null) {
             logger.setTags(tags);
         }
         
-        if(dateTimeFormat != null) {
-            logger.setDateTimeFormat(dateTimeFormat);
+        if(formatStrategy != null) {
+            logger.setFormatStrategy(formatStrategy);
+        } else {
+            logger.setFormatStrategy(new SimpleFormatStrategy());
         }
+
 
         LogContext.getContext().addLogger(logger);
     }

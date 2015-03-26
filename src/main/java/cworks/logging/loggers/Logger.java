@@ -6,14 +6,8 @@ import cworks.logging.internal.format.SimpleFormatStrategy;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.List;
 
 public abstract class Logger implements Closeable {
-
-    /**
-     * Line FormatStrategy 
-     */
-    protected FormatStrategy strategy;
 
     /**
      * Log Level 
@@ -24,9 +18,16 @@ public abstract class Logger implements Closeable {
      * Logger name
      */
     protected String name;
+
+    /**
+     * Line format strategy 
+     */
     private FormatStrategy formatStrategy;
-    private List<String> tags;
-    private String dateTimeFormat;
+
+    /**
+     * Slugs, Tags and Bears Oh my 
+     */
+    private String[] tags;
 
     public Logger(String name, Level level) {
         this(name, level, new SimpleFormatStrategy());
@@ -35,12 +36,18 @@ public abstract class Logger implements Closeable {
     public Logger(String name, Level level, FormatStrategy strategy) {
         this.name = name;
         this.activeLevel = level;
-        this.strategy = strategy;
+        this.formatStrategy = strategy;
     }
 
     public void write(Level level, String something, String...tags) {
         if(level.getValue() <= activeLevel.getValue()) {
-            String formattedLine = strategy.format(level, something, tags);
+            String[] _tags;
+            if(this.tags != null) {
+                _tags = concatArray(this.tags, tags);
+            } else {
+                _tags = tags;
+            }
+            String formattedLine = formatStrategy.format(level, something, _tags);
             write(formattedLine);
         }
     }
@@ -66,11 +73,16 @@ public abstract class Logger implements Closeable {
         return formatStrategy;
     }
 
-    public void setTags(List<String> tags) {
+    public void setTags(String[] tags) {
         this.tags = tags;
     }
 
-    public void setDateTimeFormat(String dateTimeFormat) {
-        this.dateTimeFormat = dateTimeFormat;
+    private String[] concatArray(String[] a, String[] b) {
+        int aLen = a.length;
+        int bLen = b.length;
+        String[] c = new String[aLen + bLen];
+        System.arraycopy(a, 0, c, 0, aLen);
+        System.arraycopy(b, 0, c, aLen, bLen);
+        return c;
     }
 }

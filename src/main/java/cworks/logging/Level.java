@@ -8,7 +8,8 @@ public enum Level {
     ERROR(10),
     WARN(20),
     INFO(30),
-    DEBUG(40);
+    DEBUG(40),
+    TRACE(50);
 
     private static final Map<Integer,Level> lookup = new HashMap<Integer,Level>();
 
