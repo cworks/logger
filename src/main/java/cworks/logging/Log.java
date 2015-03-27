@@ -2,7 +2,7 @@ package cworks.logging;
 
 import cworks.logging.loggers.LoggerBuilder;
 
-public class Log {
+public final class Log {
 
     /**
      * One and only context, saving for quicker access
@@ -111,13 +111,13 @@ public class Log {
     }
 
     public static void log(Level level, String something) {
-        context.chain().stream().forEach(logger -> {
-            logger.write(level, something);
+        context.forEach(logger -> {
+           logger.write(level, something);
         });
     }
     
     public static void log(Level level, String something, String...tags) {
-        context.chain().stream().forEach(logger -> {
+        context.forEach(logger -> {
             logger.write(level, something, tags);
         });
     }

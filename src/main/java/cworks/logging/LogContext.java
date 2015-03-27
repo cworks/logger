@@ -7,8 +7,14 @@ import cworks.logging.loggers.SystemOutLogger;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public final class LogContext {
+    
+    public static final String LOG_NAME_PROPERTY  = "log.name";
+    public static final String LOG_LEVEL_PROPERTY = "log.level";
+    public static final String LOG_TAGS_PROPERTY  = "log.tags";
+    public static final String LOG_FILE_PROPERTY  = "log.file";
 
     /**
      * The one and only logging context
@@ -18,14 +24,14 @@ public final class LogContext {
     static {
         INSTANCE = new LogContext();
         INSTANCE.addLogger(createSystemOutLogger());
-        if(System.getProperty("log.file") != null) {
+        if(System.getProperty(LOG_FILE_PROPERTY) != null) {
             try {
                 Logger logger = createFileLogger();
                 if(logger != null) {
                     INSTANCE.addLogger(logger);
                 }
             } catch(Exception ex) {
-                INSTANCE.chain().stream().forEach(logger -> {
+                INSTANCE.chain.stream().forEach(logger -> {
                     logger.write(Level.ERROR, "Error creating log file in static initializer.");
                 });
             }
@@ -73,20 +79,20 @@ public final class LogContext {
      */
     static Logger createFileLogger() {
         Logger logger = null;
-        if(System.getProperty("log.file") != null) {
-            File file = new File(System.getProperty("log.file"));
+        if(System.getProperty(LOG_FILE_PROPERTY) != null) {
+            File file = new File(System.getProperty(LOG_FILE_PROPERTY));
             // TODO, need to verify we can write to file.
-            String tags = System.getProperty("log.tags");
+            String tags = System.getProperty(LOG_TAGS_PROPERTY);
             if(tags != null) {
                 logger = new FileLogger(
-                    System.getProperty("log.name", "file-log"),
-                    Level.valueOf(System.getProperty("log.level", "DEBUG")),
+                    System.getProperty(LOG_NAME_PROPERTY, "file-log"),
+                    Level.valueOf(System.getProperty(LOG_LEVEL_PROPERTY, "DEBUG")),
                     file,
                     tags.split("\\s*,\\s*"));
             } else {
                 logger = new FileLogger(
-                    System.getProperty("log.name", "file-log"),
-                    Level.valueOf(System.getProperty("log.level", "DEBUG")),
+                    System.getProperty(LOG_NAME_PROPERTY, "file-log"),
+                    Level.valueOf(System.getProperty(LOG_LEVEL_PROPERTY, "DEBUG")),
                     file);
             }
         }
@@ -95,25 +101,26 @@ public final class LogContext {
     
     static Logger createSystemOutLogger() {
         Logger logger;
-        String tags = System.getProperty("log.tags");
+        String tags = System.getProperty(LOG_TAGS_PROPERTY);
         if(tags != null) {
             logger = new SystemOutLogger(
-                System.getProperty("log.name", "system-out-log"),
-                Level.valueOf(System.getProperty("log.level", "DEBUG")),
+                System.getProperty(LOG_NAME_PROPERTY, "system-out-log"),
+                Level.valueOf(System.getProperty(LOG_LEVEL_PROPERTY, "DEBUG")),
                 tags.split("\\s*,\\s*"));
         } else {
             logger = new SystemOutLogger(
-                System.getProperty("log.name", "system-out-log"),
-                Level.valueOf(System.getProperty("log.level", "DEBUG")));
+                System.getProperty(LOG_NAME_PROPERTY, "system-out-log"),
+                Level.valueOf(System.getProperty(LOG_LEVEL_PROPERTY, "DEBUG")));
         }
         return logger;
     }
 
-    public List<Logger> chain() {
-        return this.chain;
+    public void forEach(Consumer<? super Logger> action) {
+        chain.stream().forEach(action::accept);
     }
 
     public void addLogger(Logger logger) {
         chain.add(logger);
     }
+
 }

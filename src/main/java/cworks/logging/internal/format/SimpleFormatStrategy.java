@@ -39,7 +39,7 @@ public class SimpleFormatStrategy extends FormatStrategy {
                 Thread.currentThread().getName(),
                 something);
         } else { // tags
-            String tagString = Arrays.asList(tags).stream().collect(joining(", "));
+            String tagString = Arrays.asList(tags).stream().collect(joining(","));
             formattedLine = String.format("%s|%s|%s|%s|%s", 
                 getDateTimeFormatter().format(OffsetDateTime.now()),
                 level,
