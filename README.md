@@ -1,4 +1,4 @@
-# Don't make me think about logging
+### Don't make me think about logging
 
 Simple logging...just use.
 
