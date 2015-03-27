@@ -50,13 +50,15 @@ public class TestApp {
 		aaa.doAAA(Level.INFO, "A+++, That's only possible if you're Einstein smart!");
 		Log.debug("Stopping testFileLogger");
 		// Now read back file and check for each line of text
-		List<String> lines = IO.asLines(new File(logFile));
-		Assert.assertTrue(lines.get(0).contains("You're a pretty smart ole chap, you get an A!"));
-		Assert.assertTrue(lines.get(1).contains("You're not the brightest bulb but you're not the dimmest either, you get a C!"));
-		Assert.assertTrue(lines.get(2).contains("A++ your parents will give you money!"));
-		Assert.assertTrue(lines.get(3).contains("A+++, That's only possible if you're Einstein smart!"));
-		Assert.assertEquals(4, lines.size());
-		Files.delete(Paths.get(logFile));
+        if(Log.isEnabled()) {
+            List<String> lines = IO.asLines(new File(logFile));
+            Assert.assertTrue(lines.get(0).contains("You're a pretty smart ole chap, you get an A!"));
+            Assert.assertTrue(lines.get(1).contains("You're not the brightest bulb but you're not the dimmest either, you get a C!"));
+            Assert.assertTrue(lines.get(2).contains("A++ your parents will give you money!"));
+            Assert.assertTrue(lines.get(3).contains("A+++, That's only possible if you're Einstein smart!"));
+            Assert.assertEquals(4, lines.size());
+            Files.delete(Paths.get(logFile));
+        }
 	}
 	
 	@Test
@@ -77,5 +79,15 @@ public class TestApp {
 		aaa.doAAA(Level.INFO, "aaa-hello-info");
 		aaa.doAAA(Level.WARN, "aaa-hello-warn");
 	}
+    
+    @Test
+    public void testLoggingExceptions() throws IOException {
+        try {
+            Log.debug();
+            throw new Exception("This is never gonna work Sponge Bob!");
+        } catch(Exception ex) {
+            Log.debug("A trace log statement with an Exception", ex);
+        }
+    }
 
 }

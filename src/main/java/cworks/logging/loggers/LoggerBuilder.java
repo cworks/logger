@@ -1,7 +1,6 @@
 package cworks.logging.loggers;
 
 import cworks.logging.Level;
-import cworks.logging.LogContext;
 import cworks.logging.internal.format.FormatStrategy;
 import cworks.logging.internal.format.SimpleFormatStrategy;
 
@@ -84,6 +83,6 @@ public class LoggerBuilder {
             logger.setFormatStrategy(new SimpleFormatStrategy());
         }
         
-        LogContext.getContext().addLogger(logger);
+        LoggingContext.getContext().addLogger(logger);
     }
 }

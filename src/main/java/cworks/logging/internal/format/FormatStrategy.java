@@ -9,6 +9,7 @@ public abstract class FormatStrategy {
     private DateTimeFormatter formatter;
 
     public abstract String format(Level level, String something, String...tags);
+    public abstract String format(Level level, String something, Throwable throwable, String...tags);
 
     protected FormatStrategy(DateTimeFormatter formatter) {
         this.formatter = formatter;

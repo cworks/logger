@@ -36,7 +36,7 @@ public class FileLogger extends Logger {
         setTags(tags);
     }
 
-        @Override
+    @Override
     protected void write(String something) {
         if(getLogWriter() != null) {
             writeQuietly(something);
@@ -60,10 +60,6 @@ public class FileLogger extends Logger {
             }
             // first time running
             if(this.logFile != null) {
-                if(!this.logFile.exists()) {
-                    this.logFile.getParentFile().mkdirs();
-                    this.logFile.createNewFile();
-                }
                 this.logWriter = IO.asWriter(this.logFile, true);
                 if(this.logWriter != null) {
                     final FileLogger me = this;

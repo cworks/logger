@@ -23,6 +23,8 @@ public class SystemOutLogger extends Logger {
 
     @Override
     protected void write(String something) {
-        System.out.println(something);
+        if(something != null) {
+            System.out.println(something.trim());
+        }
     }
 }

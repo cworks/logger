@@ -2,6 +2,8 @@ package cworks.logging.internal.format;
 
 import cworks.logging.Level;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -29,7 +31,21 @@ public class SimpleFormatStrategy extends FormatStrategy {
     
     @Override
     public String format(Level level, String something, String...tags) {
+        return format(level, something, null, tags);
+    }
+
+    @Override
+    public String format(Level level, String something, Throwable throwable, String...tags) {
         String formattedLine;
+
+        if(throwable != null) {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            throwable.printStackTrace(pw);
+            something = something + System.getProperty("line.separator")
+                + "STACKTRACE:"   + System.getProperty("line.separator")
+                + sw.toString();
+        }
         
         // no tags
         if(tags.length <= 0) {
@@ -38,9 +54,9 @@ public class SimpleFormatStrategy extends FormatStrategy {
                 level,
                 Thread.currentThread().getName(),
                 something);
-        } else { // tags
+        } else { // has tags
             String tagString = Arrays.asList(tags).stream().collect(joining(","));
-            formattedLine = String.format("%s|%s|%s|%s|%s", 
+            formattedLine = String.format("%s|%s|%s|%s|%s",
                 getDateTimeFormatter().format(OffsetDateTime.now()),
                 level,
                 Thread.currentThread().getName(),

@@ -1,7 +1,5 @@
 package cworks.logging;
 
-import org.junit.Test;
-
 /**
  * Test the speed of various methods for getting the caller class name
  */
@@ -12,7 +10,7 @@ public class PerformanceTest {
     /**
      * Test all four methods
      */
-    @Test
+    //@Test
     public void testPerformance() {
         testMethod(new ReflectionMethod());
         testMethod(new ThreadStackTraceMethod());

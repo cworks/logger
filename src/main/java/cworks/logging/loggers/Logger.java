@@ -40,14 +40,22 @@ public abstract class Logger implements Closeable {
     }
 
     public void write(Level level, String something, String...tags) {
+        write(level, something, null, tags);
+    }
+
+    public void write(Level level, String something, Throwable throwable) {
+        write(level, something, throwable, new String[]{});
+    }
+
+    public void write(Level level, String something, Throwable throwable, String...tags) {
         if(level.getValue() <= activeLevel.getValue()) {
-            String[] _tags;
-            if(this.tags != null) {
-                _tags = concatArray(this.tags, tags);
+            String[] _tags = createTags(tags);
+            String formattedLine;
+            if(throwable != null) {
+                formattedLine = formatStrategy.format(level, something, throwable, _tags);
             } else {
-                _tags = tags;
+                formattedLine = formatStrategy.format(level, something, _tags);
             }
-            String formattedLine = formatStrategy.format(level, something, _tags);
             write(formattedLine);
         }
     }
@@ -77,6 +85,20 @@ public abstract class Logger implements Closeable {
         this.tags = tags;
     }
 
+    private String[] createTags(String...tags) {
+        String[] _tags;
+        if(this.tags != null && tags != null) {
+            _tags = concatArray(this.tags, tags);
+        } else if(this.tags != null) {
+            _tags = this.tags;
+        } else if(tags != null) {
+            _tags = tags;
+        } else {
+            _tags = new String[]{};
+        }
+        return _tags;
+    }
+    
     private String[] concatArray(String[] a, String[] b) {
         int aLen = a.length;
         int bLen = b.length;
@@ -85,4 +107,7 @@ public abstract class Logger implements Closeable {
         System.arraycopy(b, 0, c, aLen, bLen);
         return c;
     }
+
+
+
 }

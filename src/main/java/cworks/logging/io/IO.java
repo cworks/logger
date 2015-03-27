@@ -144,6 +144,16 @@ public class IO {
         closeQuietly(writer);
         return checkSum;
     }
+    
+    public static boolean touch(final File file) throws IOException {
+        checkArg(file);
+        if(!file.exists()) {
+            OutputStream out = asOutputStream(file);
+            closeQuietly(out);
+        } 
+        
+        return file.setLastModified(System.currentTimeMillis());
+    }
 
     public static void checkArg(Object object) {
         if(object == null) {
@@ -166,8 +176,22 @@ public class IO {
     }
 
     public static Writer asWriter(final File file, boolean append) throws IOException {
-        Writer writer = new BufferedWriter(new FileWriter(file, append));
-        return writer;
+        if(file.exists()) {
+            if(file.isDirectory()) {
+                throw new IOException("File instance points to a directory[" + file + "] not a File");
+            }
+            if(!file.canWrite()) {
+                throw new IOException("File [" + file + "] exists but isn't writable by this process.");
+            }
+        } else {
+            File parent  = file.getParentFile();
+            if(parent != null) {
+                if(!parent.mkdirs() && !parent.isDirectory()) {
+                    throw new IOException("Parent directory [" + parent + "] could not be created.");
+                }
+            }
+        }
+        return new BufferedWriter(new FileWriter(file, append));
     }
 
     public static Writer asWriter(String path) throws IOException {
@@ -175,7 +199,7 @@ public class IO {
     }
     
     public static Writer asWriter(String path, boolean append) throws IOException {
-        return asWriter(new File(path), append);
+        return asWriter(path, append);
     }
 
     public static Reader asReader(final File file) throws IOException {
@@ -187,24 +211,46 @@ public class IO {
         return new BufferedReader(new FileReader(file));
     }
 
-    public static long countLines(final File file) throws IOException {
-        BufferedReader reader = asBufferedReader(file);
-        long count = reader.lines().count();
-        closeQuietly(reader);
-        return count;
+    public static OutputStream asOutputStream(final File file) throws IOException {
+        return asOutputStream(file, false);
     }
 
-    public static OutputStream asOutputStream(final File file) throws IOException {
-        OutputStream stream = new FileOutputStream(file);
-        return stream;
+    public static OutputStream asOutputStream(final File file, boolean append) throws IOException {
+        if(file.exists()) {
+            if(file.isDirectory()) {
+                throw new IOException("File instance points to a directory[" + file + "] not a File");
+            }
+            if(!file.canWrite()) {
+                throw new IOException("File [" + file + "] exists but isn't writable by this process.");
+            }
+        } else {
+            File parent  = file.getParentFile();
+            if(parent != null) {
+                if(!parent.mkdirs() && !parent.isDirectory()) {
+                    throw new IOException("Parent directory [" + parent + "] could not be created.");
+                }
+            }
+        }
+        return new FileOutputStream(file, append);
     }
 
     public static OutputStream asOutputStream(String path) throws IOException {
-        return asOutputStream(new File(path));
+        return asOutputStream(path, false);
+    }
+    
+    public static OutputStream asOutputStream(String path, boolean append) throws IOException {
+        return asOutputStream(new File(path), append);
     }
 
     public static List<String> asLines(File file) throws IOException {
         BufferedReader reader = asBufferedReader(file);
         return reader.lines().collect(Collectors.toList());
+    }
+
+    public static long countLines(final File file) throws IOException {
+        BufferedReader reader = asBufferedReader(file);
+        long count = reader.lines().count();
+        closeQuietly(reader);
+        return count;
     }
 }
