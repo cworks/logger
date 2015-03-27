@@ -10,10 +10,25 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public final class LogContext {
-    
+
+    /**
+     * Public property that controls how we start up - name of log
+     */
     public static final String LOG_NAME_PROPERTY  = "log.name";
+
+    /**
+     * Public property that controls how we start up - log level 
+     */
     public static final String LOG_LEVEL_PROPERTY = "log.level";
+
+    /**
+     * Public property that controls how we start up - log tags 
+     */
     public static final String LOG_TAGS_PROPERTY  = "log.tags";
+
+    /**
+     * Public property that controls how we start up - log file
+     */
     public static final String LOG_FILE_PROPERTY  = "log.file";
 
     /**
