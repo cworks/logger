@@ -6,7 +6,6 @@ import cworks.logging.internal.format.FormatStrategy;
 import cworks.logging.internal.format.SimpleFormatStrategy;
 
 import java.io.File;
-import java.io.IOException;
 
 public class LoggerBuilder {
     
@@ -31,11 +30,20 @@ public class LoggerBuilder {
     }
 
     public LoggerBuilder tags(String... tags) {
-        this.tags = tags;
+        if(tags != null) {
+            this.tags = tags;
+        }
+        return this;
+    }
+    
+    public LoggerBuilder tags(String tags) {
+        if(tags != null) {
+            tags(tags.split("\\s*,\\s*"));
+        }
         return this;
     }
 
-    public LoggerBuilder file(String file) throws IOException {
+    public LoggerBuilder file(String file) {
         this.file = new File(file);
         return this;
     }
@@ -47,6 +55,7 @@ public class LoggerBuilder {
 
     /**
      * Create the appropriate logger and add it to LogContext
+     * TODO: Check that the Logger doesn't already exist before adding
      */
     public void add() {
         Logger logger;
@@ -74,8 +83,7 @@ public class LoggerBuilder {
         } else {
             logger.setFormatStrategy(new SimpleFormatStrategy());
         }
-
-
+        
         LogContext.getContext().addLogger(logger);
     }
 }

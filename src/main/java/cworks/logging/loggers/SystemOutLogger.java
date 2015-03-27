@@ -12,6 +12,15 @@ public class SystemOutLogger extends Logger {
         super("system-out-logger", level);
     }
 
+    public SystemOutLogger(String name, Level level) {
+        super(name, level);
+    }
+    
+    public SystemOutLogger(String name, Level level, String...tags) {
+        super(name, level);
+        setTags(tags);
+    }
+
     @Override
     protected void write(String something) {
         System.out.println(something);

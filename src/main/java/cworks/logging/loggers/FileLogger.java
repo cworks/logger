@@ -26,7 +26,17 @@ public class FileLogger extends Logger {
         this.logFile = logFile;
     }
 
-    @Override
+    public FileLogger(String name, Level level, File logFile) {
+        super(name, level);
+        this.logFile = logFile;
+    }
+
+    public FileLogger(String name, Level level, File logFile, String...tags) {
+        this(name, level, logFile);
+        setTags(tags);
+    }
+
+        @Override
     protected void write(String something) {
         if(getLogWriter() != null) {
             writeQuietly(something);
