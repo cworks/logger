@@ -12,5 +12,5 @@ Simple logging...just use.
         
 	Log.newLogger().file("/tmp/test_app.log").level("info").tags("TestApp").add();
 	
-	Log.info("This will now show up on all logger, including the one for test_app.log");
+	Log.info("This will now show up on all loggers, including the one for test_app.log");
 
